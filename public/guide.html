@@ -1,0 +1,869 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Paris · A Guest Guide · 159 Rue Montmartre</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=Jost:wght@300;400;500&display=swap" rel="stylesheet" />
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --ink:    #1a1208; --mid:   #3d2e1e; --muted: #8a7565;
+  --warm:   #b8957a; --gold:  #c8a96e; --rule:  #e2d5c3;
+  --bg:     #faf7f2; --surface:#f4ede2; --white: #fffdf9;
+  --serif:  'Cormorant Garamond', Georgia, serif;
+  --sans:   'Jost', sans-serif;
+}
+html { scroll-behavior: smooth; font-size: 16px; }
+body { background: var(--bg); color: var(--ink); font-family: var(--sans); font-weight: 300; line-height: 1.7; -webkit-font-smoothing: antialiased; }
+
+/* PDF button */
+#pdf-bar { position: fixed; bottom: 28px; right: 28px; z-index: 100; }
+#pdf-btn { display: flex; align-items: center; gap: 8px; background: var(--ink); color: var(--surface); border: none; border-radius: 40px; padding: 12px 22px; font-family: var(--sans); font-size: 12px; font-weight: 400; letter-spacing: 0.12em; text-transform: uppercase; cursor: pointer; box-shadow: 0 8px 32px rgba(26,18,8,0.22); transition: transform 0.2s, box-shadow 0.2s; }
+#pdf-btn:hover { transform: translateY(-2px); box-shadow: 0 14px 40px rgba(26,18,8,0.28); }
+#pdf-btn svg { width: 14px; height: 14px; stroke: var(--gold); fill: none; stroke-width: 1.5; }
+
+/* TOC */
+#toc-bar { position: sticky; top: 0; z-index: 50; background: rgba(250,247,242,0.94); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-bottom: 1px solid var(--rule); }
+#toc-inner { max-width: 860px; margin: 0 auto; padding: 0 40px; display: flex; align-items: center; justify-content: space-between; height: 52px; gap: 20px; }
+#toc-logo { font-family: var(--serif); font-size: 15px; color: var(--ink); letter-spacing: 0.04em; white-space: nowrap; flex-shrink: 0; }
+#toc-links { display: flex; align-items: center; overflow-x: auto; scrollbar-width: none; -ms-overflow-style: none; }
+#toc-links::-webkit-scrollbar { display: none; }
+#toc-links a { display: block; font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); text-decoration: none; padding: 6px 14px; white-space: nowrap; transition: color 0.2s; border-right: 1px solid var(--rule); }
+#toc-links a:first-child { border-left: 1px solid var(--rule); }
+#toc-links a:hover, #toc-links a.active { color: var(--ink); }
+
+/* Cover */
+#cover { max-width: 860px; margin: 0 auto; padding: 80px 40px 64px; text-align: center; }
+.cover-ornament { font-family: var(--serif); font-size: 22px; color: var(--gold); letter-spacing: 0.3em; display: block; margin-bottom: 32px; animation: fadeUp 1s ease both; }
+.cover-title { font-family: var(--serif); font-size: clamp(56px, 10vw, 88px); font-weight: 300; line-height: 0.95; color: var(--ink); margin-bottom: 16px; animation: fadeUp 1s 0.1s ease both; }
+.cover-subtitle { font-family: var(--serif); font-size: 18px; font-style: italic; color: var(--gold); letter-spacing: 0.04em; margin-bottom: 28px; animation: fadeUp 1s 0.2s ease both; }
+.cover-address { font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--muted); animation: fadeUp 1s 0.3s ease both; }
+.cover-rule { width: 48px; height: 1px; background: var(--gold); margin: 32px auto; animation: fadeUp 1s 0.35s ease both; }
+.cover-intro { font-family: var(--serif); font-size: 19px; font-style: italic; line-height: 1.75; color: var(--mid); max-width: 580px; margin: 0 auto 48px; animation: fadeUp 1s 0.4s ease both; }
+
+/* Chapter */
+.chapter { max-width: 860px; margin: 0 auto; padding: 64px 40px; border-top: 1px solid var(--rule); }
+.chapter-header { display: flex; align-items: baseline; gap: 20px; margin-bottom: 8px; }
+.chapter-num { font-family: var(--serif); font-size: 13px; color: var(--gold); letter-spacing: 0.1em; }
+.chapter-title { font-family: var(--serif); font-size: clamp(28px, 5vw, 38px); font-weight: 400; color: var(--ink); line-height: 1.1; }
+.chapter-subtitle { font-family: var(--serif); font-size: 15px; font-style: italic; color: var(--muted); margin-bottom: 36px; padding-bottom: 24px; border-bottom: 1px solid var(--rule); }
+.chapter-lead { font-family: var(--serif); font-size: 19px; line-height: 1.75; color: var(--mid); margin-bottom: 32px; font-style: italic; }
+.body-text { font-size: 15px; line-height: 1.85; color: var(--mid); margin-bottom: 20px; }
+
+/* Callout */
+.callout { background: var(--white); border: 1px solid var(--rule); border-left: 3px solid var(--gold); border-radius: 2px; padding: 20px 24px; margin: 28px 0; }
+.callout-label { font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--gold); margin-bottom: 6px; }
+.callout-text { font-family: var(--serif); font-size: 16px; font-style: italic; color: var(--mid); line-height: 1.7; }
+
+/* Place cards */
+.places-grid { display: flex; flex-direction: column; gap: 0; margin-top: 8px; }
+.place-card { padding: 28px 0; border-bottom: 1px solid var(--rule); }
+.place-card:last-child { border-bottom: none; }
+.place-name { font-family: var(--serif); font-size: 21px; font-weight: 500; color: var(--ink); margin-bottom: 2px; }
+.place-name-fr { font-family: var(--serif); font-size: 14px; font-style: italic; color: var(--gold); margin-bottom: 6px; }
+.place-address { font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin-bottom: 12px; }
+.place-desc { font-size: 15px; line-height: 1.8; color: var(--mid); margin-bottom: 10px; }
+.place-tip { font-size: 13px; color: var(--warm); font-style: italic; padding-left: 16px; border-left: 2px solid var(--gold); line-height: 1.6; }
+
+/* Section label */
+.section-label { font-family: var(--serif); font-size: 22px; font-style: italic; color: var(--ink); margin: 40px 0 4px; }
+.section-label-rule { width: 32px; height: 1px; background: var(--gold); margin-bottom: 20px; }
+
+/* Steps (arrival) */
+.steps { display: flex; flex-direction: column; gap: 0; margin: 24px 0; }
+.step { display: flex; gap: 20px; padding: 20px 0; border-bottom: 1px solid var(--rule); }
+.step:last-child { border-bottom: none; }
+.step-num { font-family: var(--serif); font-size: 28px; color: var(--gold); line-height: 1; flex-shrink: 0; width: 32px; }
+.step-content h4 { font-family: var(--serif); font-size: 17px; font-weight: 500; color: var(--ink); margin-bottom: 6px; }
+.step-content p { font-size: 14px; line-height: 1.8; color: var(--mid); }
+.step-content .tip { font-size: 13px; color: var(--warm); font-style: italic; margin-top: 8px; padding-left: 14px; border-left: 2px solid var(--gold); }
+
+/* Practical grid */
+.practical-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; margin-top: 8px; }
+.practical-item h4 { font-family: var(--serif); font-size: 17px; font-weight: 500; color: var(--ink); margin-bottom: 6px; }
+.practical-item p { font-size: 14px; line-height: 1.8; color: var(--mid); }
+
+/* Concierge cards */
+.concierge-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 24px; }
+.concierge-card { background: var(--white); border: 1px solid var(--rule); border-radius: 4px; padding: 24px 20px; text-align: center; }
+.concierge-icon { font-family: var(--serif); font-size: 28px; color: var(--gold); margin-bottom: 10px; }
+.concierge-title { font-family: var(--serif); font-size: 16px; font-weight: 500; color: var(--ink); margin-bottom: 6px; }
+.concierge-desc { font-size: 13px; color: var(--muted); line-height: 1.6; }
+
+/* Restaurant cards (JS-rendered) */
+#restaurants-list { display: flex; flex-direction: column; gap: 0; }
+.restaurant-card { padding: 24px 0; border-bottom: 1px solid var(--rule); }
+.restaurant-card:last-child { border-bottom: none; }
+.restaurant-name { font-family: var(--serif); font-size: 20px; font-weight: 500; color: var(--ink); margin-bottom: 2px; }
+.restaurant-meta { font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin-bottom: 10px; }
+.restaurant-desc { font-size: 14px; line-height: 1.8; color: var(--mid); }
+
+/* About us */
+.about-us { background: var(--white); border: 1px solid var(--rule); border-radius: 4px; padding: 36px 40px; margin-top: 8px; }
+.about-us p { font-family: var(--serif); font-size: 18px; font-style: italic; line-height: 1.85; color: var(--mid); }
+.about-us .sign { font-family: var(--serif); font-size: 22px; font-weight: 500; color: var(--ink); margin-top: 24px; font-style: normal; }
+
+/* Closing */
+#closing { max-width: 860px; margin: 0 auto; padding: 80px 40px; text-align: center; border-top: 1px solid var(--rule); }
+.closing-text { font-family: var(--serif); font-size: 22px; font-style: italic; line-height: 1.8; color: var(--mid); max-width: 480px; margin: 0 auto 32px; }
+.closing-sign { font-family: var(--serif); font-size: 28px; font-weight: 500; color: var(--ink); }
+
+/* Footer */
+footer { text-align: center; padding: 32px 40px 48px; font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); border-top: 1px solid var(--rule); }
+
+/* Animations */
+@keyframes fadeUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+.fade-in { opacity: 0; transform: translateY(20px); transition: opacity 0.7s ease, transform 0.7s ease; }
+.fade-in.visible { opacity: 1; transform: translateY(0); }
+
+/* Print */
+@media print {
+  #pdf-bar, #toc-bar { display: none !important; }
+  body { background: white; font-size: 11pt; }
+  .chapter { padding: 40px 0; page-break-inside: avoid; }
+  .place-card, .step, .restaurant-card { page-break-inside: avoid; }
+  .cover-title { font-size: 56pt; }
+  #cover { padding: 40px 0; }
+  .fade-in { opacity: 1 !important; transform: none !important; }
+  a { color: inherit; text-decoration: none; }
+  .concierge-grid { grid-template-columns: repeat(3,1fr); }
+  .practical-grid { grid-template-columns: 1fr 1fr; }
+}
+
+/* Mobile */
+@media (max-width: 600px) {
+  #toc-inner { padding: 0 20px; }
+  #toc-logo { display: none; }
+  #cover, .chapter, #closing { padding-left: 24px; padding-right: 24px; }
+  .practical-grid, .concierge-grid { grid-template-columns: 1fr; gap: 20px; }
+  #pdf-bar { bottom: 20px; right: 20px; }
+  .about-us { padding: 24px; }
+}
+</style>
+</head>
+<body>
+
+<!-- PDF button -->
+<div id="pdf-bar">
+  <button id="pdf-btn" onclick="window.print()">
+    <svg viewBox="0 0 24 24"><path d="M7 17H4a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2h-3"/><rect x="7" y="13" width="10" height="8" rx="1"/><path d="M7 7V3h10v4"/></svg>
+    Download PDF
+  </button>
+</div>
+
+<!-- TOC -->
+<nav id="toc-bar">
+  <div id="toc-inner">
+    <div id="toc-logo">159 Rue Montmartre</div>
+    <div id="toc-links">
+      <a href="#arrival">Arrival</a>
+      <a href="#apartment">The Apartment</a>
+      <a href="#passages">The Passages</a>
+      <a href="#montorgueil">Montorgueil</a>
+      <a href="#coffee">Coffee</a>
+      <a href="#culture">Culture</a>
+      <a href="#evenings">Evenings</a>
+      <a href="#restaurants">Restaurants</a>
+      <a href="#concierge">Concierge</a>
+      <a href="#practical">Practical</a>
+    </div>
+  </div>
+</nav>
+
+<!-- Cover -->
+<section id="cover">
+  <span class="cover-ornament">✦</span>
+  <h1 class="cover-title">Paris</h1>
+  <p class="cover-subtitle">A Private Guest Guide</p>
+  <p class="cover-address">159 Rue Montmartre &nbsp;·&nbsp; 2ème Arrondissement</p>
+  <div class="cover-rule"></div>
+  <p class="cover-intro">
+    You are staying in the very heart of Paris — not the Paris of postcards,
+    but the Paris that Parisians actually love. This guide is written by Irene and Danny,
+    who fell in love with this city and this building. Treat it as a letter from a friend.
+  </p>
+  <span class="cover-ornament" style="font-size:14px; animation-delay:0.5s">✦ &nbsp; ✦ &nbsp; ✦</span>
+</section>
+
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- CHAPTER 0 — BEFORE YOU LEAVE HOME                      -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<section class="chapter fade-in" id="before">
+  <div class="chapter-header">
+    <span class="chapter-num">✦</span>
+    <h2 class="chapter-title">Before You Leave Home</h2>
+  </div>
+  <p class="chapter-subtitle">Our single best piece of advice</p>
+
+  <p class="chapter-lead">
+    Pack light. You will thank us the moment you navigate your first cobblestone street.
+    But also bring a collapsible duffel bag — empty, folded flat at the bottom of your case.
+  </p>
+
+  <p class="body-text">
+    It is essentially impossible to leave Paris without acquiring things. The city is
+    designed to seduce you into extra luggage — the markets, the wine shops, the patisserie
+    boxes you will want to carry home. The empty duffel is your insurance policy against
+    an impossible choice at the airport.
+  </p>
+
+  <div class="callout">
+    <div class="callout-label">City &amp; country hopping</div>
+    <p class="callout-text">The apartment's location makes it an exceptional base not just for Paris but for all of Europe. London is 2h15 by Eurostar, Brussels 1h22, Amsterdam 3h20. Rome, Barcelona, Lisbon — all a short flight. The empty duffel doubles as your weekend away bag.</p>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- CHAPTER 1 — ARRIVAL                                     -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<section class="chapter fade-in" id="arrival">
+  <div class="chapter-header">
+    <span class="chapter-num">I</span>
+    <h2 class="chapter-title">Arrival</h2>
+  </div>
+  <p class="chapter-subtitle">From airport to apartment · Step by step</p>
+
+  <div class="section-label">At the airport</div>
+  <div class="section-label-rule"></div>
+
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-content">
+        <h4>Skip the touts, find the taxi rank</h4>
+        <p>Walk straight past anyone approaching you inside the terminal — illegal taxi peddlers are persistent and will cost you significantly more. Follow signs to the official Paris Taxis rank outside. Fares from CDG are fixed by law: approximately €56 to central Paris on the Right Bank, €65 to the Left Bank.</p>
+        <p class="tip">Ask the driver upfront whether they take cards. Some will claim their machine is broken on arrival — it rarely is. If paying cash for excess luggage, expect to negotiate; €2–5 per extra bag is standard.</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-content">
+        <h4>The journey in</h4>
+        <p>Around 30 minutes with clear roads, 45–60 minutes in normal traffic. Official taxis can use the bus lane, which meaningfully cuts journey time during rush hour. If you need a taxi pre-arranged, let us know — we can arrange transportation as part of your package at no extra cost.</p>
+        <p class="tip">When leaving for the airport, ask your driver to drop at your departure terminal's arrivals level (e.g. Terminal 2E arrivals). You then take your luggage up the escalators directly to check-in — far easier than navigating departures with bags.</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-content">
+        <h4>Collect your keys — Hôtel Jeff</h4>
+        <p>Your keys are held at Hôtel Jeff, 24 hours a day, for your convenience. Hôtel Jeff is in the 9th arrondissement — conveniently between the apartment and both the airport and the train stations. Ask your taxi to make a brief stop, or collect on foot: it is a 10-minute walk from the apartment building.</p>
+        <p class="tip">A note on keys. Paris is not like home in this regard. Keys here are cut against a registered security card, and replacing a lost key takes several days and involves bureaucracy. Lost keys carry a replacement fee of €400 — not to be punitive, but to reflect the genuine inconvenience and potential lost rental days. Please treat the key as you would a passport.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-label">Finding the apartment</div>
+  <div class="section-label-rule"></div>
+
+  <p class="body-text">
+    This is where it gets interesting — and once you know it, you will feel like a genuine Parisian
+    with a proper secret address. Walk along rue Montmartre heading north from Boulevard Montmartre.
+    Cross into the 9th arrondissement — the boundary is Boulevard Montmartre — and we are approximately
+    half a block along on the right-hand side. Look for <strong>number 157</strong>, between a Picto store
+    and a sandwicherie. You will see 159 on the building — however the entrance itself
+    is accessed via 157, so walk through that door rather than looking for a separate entrance at 159.
+  </p>
+
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-content">
+        <h4>The front door — 157</h4>
+        <p>The entrance code is <strong>23B59#</strong>. During weekdays between 8am and 5pm, buildings like ours that house both businesses and residences can often be entered simply by pressing the entry button — no code needed. After hours and at weekends, use the code. You also have a fob which will open the door instantly.</p>
+        <p class="tip">When leaving, press the button marked <em>Porte</em> to release the latch before pushing the door open. All doors auto-lock — never step out without your keys.</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-content">
+        <h4>Through the hallway</h4>
+        <p>There is a light button just inside — press it. Walk straight down the hallway. The first set of doors on your left belongs to number 157 — a different building entirely. Walk past them.</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-content">
+        <h4>The lift</h4>
+        <p>The lift is ahead of you. Call it with the button. A word on European lifts: this one is authentically Parisian in scale — two adults and a small child, or two adults with one large suitcase. Plan to make two trips if you are a group with luggage. It is not a failing of the building; it is a feature of a city built before the age of the wheeled suitcase.</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">4</div>
+      <div class="step-content">
+        <h4>The courtyard entrance — 159</h4>
+        <p>Past the lift, follow the passage to the left into the mailbox area. Immediately to your right is a door to the courtyard. Step through and walk diagonally to the far right corner. This is the second entrance — the one that is truly yours.</p>
+        <p class="tip">The courtyard is the moment the city disappears. Even though the streets outside are alive at any hour, in here there is only quiet. This is part of what makes the apartment special.</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">5</div>
+      <div class="step-content">
+        <h4>Opening the courtyard door</h4>
+        <p>Find the code box. Insert the key but do not push it all the way in — leave a small amount of key visible. Then jiggle and wiggle gently until you hear a soft magnetic pop. That is the door releasing. It opens inward toward you.</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">6</div>
+      <div class="step-content">
+        <h4>The stairs to the 4th floor</h4>
+        <p>The steps here are original to the building — beautiful, worn, and slightly irregular in height. Take them carefully, especially with bags. France counts from the ground floor as zero (rez-de-chaussée), so the 4th floor by French count is what would be the 5th floor at home. Worth knowing before your legs complain.</p>
+        <p class="tip">If you are doing this on foot rather than lift: this is a genuine 19th-century Parisian staircase. It is a little like climbing history. Embrace it.</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">7</div>
+      <div class="step-content">
+        <h4>Your front door</h4>
+        <p>Look for the door marked <strong>Gathua / Tang</strong>. Insert the key and turn it <strong>twice</strong> — this is a double lock. Once inside, you have arrived. Put down your bags. Notice how quiet it is.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- CHAPTER 2 — THE APARTMENT                              -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<section class="chapter fade-in" id="apartment">
+  <div class="chapter-header">
+    <span class="chapter-num">II</span>
+    <h2 class="chapter-title">The Apartment</h2>
+  </div>
+  <p class="chapter-subtitle">116m² · 2 bedrooms · 2 bathrooms · 4th floor</p>
+
+  <p class="chapter-lead">
+    The building at 159 rue Montmartre dates from around 1850 — a handsome Haussmann-era structure
+    in one of Paris's historic commercial hearts. Stepping inside the apartment is a small
+    architectural surprise: old world shell, entirely modern interior.
+  </p>
+
+  <p class="body-text">
+    On your way in, notice the entrance hall downstairs. The <strong>chasse-roues</strong> — those
+    rounded stone guards set into the wall at carriage height — are original to the building.
+    They were placed there to protect the stonework from horse-drawn carriage wheels. They have
+    been doing their job for over 170 years and show no signs of stopping.
+  </p>
+
+  <p class="body-text">
+    The apartment itself sits on the 4th floor. While upper floors in Haussmann buildings
+    typically have more modest ceiling heights than the grander lower levels, the space feels
+    genuinely airy — the parquet floors, the considered proportions, and most of all the
+    windows make it feel larger than it measures. Notice the <strong>original fireplace</strong>
+    and its antique cast-iron fireback — a classic French feature that once protected the wall
+    while radiating extra warmth back into the room. It no longer burns, but it anchors the
+    living space beautifully.
+  </p>
+
+  <div class="callout">
+    <div class="callout-label">The crosswind</div>
+    <p class="callout-text">Open the windows in both the TV room and the living room simultaneously. What follows is one of the apartment's quiet pleasures — a remarkable crosswind moves through the space, particularly in the warmer months. Paris summers are short and the apartment handles them without air conditioning almost entirely through this natural ventilation.</p>
+  </div>
+
+  <div class="section-label">Things worth knowing</div>
+  <div class="section-label-rule"></div>
+
+  <div class="practical-grid">
+    <div class="practical-item">
+      <h4>The windows</h4>
+      <p>Each window has a dual mechanism — you can open just the top section for ventilation, or swing the whole panel open fully. When closing and locking, ensure the window sits completely flush before turning the lock. This matters in rain and in winter to keep the heat in.</p>
+    </div>
+    <div class="practical-item">
+      <h4>Heating &amp; cooling</h4>
+      <p>The apartment has underfloor heating throughout — the warmth rises evenly and gently rather than blasting from a single point. It keeps the space consistently comfortable without ever feeling hot. Air conditioning is available for summer, though Paris heat typically lasts only a few weeks and the crosswind usually does the job beautifully.</p>
+    </div>
+    <div class="practical-item">
+      <h4>The lamps</h4>
+      <p>The paper lamps around the apartment are delicate — they puncture easily and are not easily replaced. Please handle with care and keep them away from small children. The distinctive architectural lamp in the living area was designed by the owner, inspired by a piece in an architecture magazine. It is one of a kind and genuinely irreplaceable.</p>
+    </div>
+    <div class="practical-item">
+      <h4>The TV room</h4>
+      <p>The TV room contains two sofa beds — fully functional as sleeping spaces for additional guests or for a lazy afternoon with a film and the windows open to the courtyard. The room works as both a media space and a second sitting area depending on how you want to use the apartment.</p>
+    </div>
+    <div class="practical-item">
+      <h4>Welcome provisions</h4>
+      <p>You will find two bottles of wine and a bottle of champagne waiting for you. These are yours — enjoy them whenever and however you like. If you open something and love it, feel free to leave something in return for the next guests. It has become a small ritual of the apartment and we love it.</p>
+    </div>
+    <div class="practical-item">
+      <h4>The breakfast nook</h4>
+      <p>Coffee is set up and ready. Cups are in the kitchen cabinets above. There is ample storage throughout — you are 116m² of Parisian real estate, not a hotel room. Use the space. Make yourself at home. That is the entire point.</p>
+    </div>
+  </div>
+
+  <div class="callout" style="margin-top: 36px;">
+    <div class="callout-label">Mid-stay cleaning</div>
+    <p class="callout-text">For longer stays, we offer a bi-weekly cleaning service at €100 per session — your space refreshed, linens changed, supplies restocked. We schedule this in advance so you can plan to be out for a few hours. Ask us to arrange it when you book.</p>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- CHAPTER 3 — THE PASSAGES                               -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<section class="chapter fade-in" id="passages">
+  <div class="chapter-header">
+    <span class="chapter-num">III</span>
+    <h2 class="chapter-title">The Passages Couverts</h2>
+  </div>
+  <p class="chapter-subtitle">Les passages couverts · Your hidden city</p>
+
+  <p class="chapter-lead">
+    The covered passages of Paris are one of the city's greatest secrets — built in the
+    early 19th century as the world's first shopping arcades, forgotten by Haussmann's
+    redesign, preserved in a state of amber-lit, dignified sleep. One entrance is almost
+    your front door.
+  </p>
+
+  <div class="places-grid">
+    <div class="place-card">
+      <div class="place-name">Passage des Panoramas</div>
+      <div class="place-name-fr">Le plus ancien passage de Paris · 1799</div>
+      <div class="place-address">151 Rue Montmartre &nbsp;·&nbsp; Daily 6am–midnight</div>
+      <p class="place-desc">The oldest surviving covered passage in Paris — and almost literally your front door. Opened in 1799, it was the first public space in France to receive gas lighting, in 1816. Enter through the heavy wooden doors into a long amber corridor of antique shops, stamp dealers, coin collectors, and bistros unchanged from the Belle Époque. The passage connects to three further galleries — Galerie Saint-Marc, Galerie Feydeau, Galerie Montmartre — covering an entire city block. Get intentionally lost.</p>
+      <p class="place-tip">Weekday afternoons when the dealers are in their element. Evening is magical — the old gas-style lamps are lit and the passage feels like a stage set for a film that hasn't been made yet.</p>
+    </div>
+    <div class="place-card">
+      <div class="place-name">Galerie Vivienne</div>
+      <div class="place-name-fr">Le passage le plus élégant · 1826</div>
+      <div class="place-address">6 Rue Vivienne &nbsp;·&nbsp; Daily 8:30am–8:30pm</div>
+      <p class="place-desc">Declared a historic monument in 1974 and widely considered the most beautiful passage in Paris. The hand-laid mosaic floors, the soaring glass roof, the neoclassical rotunda — it is the kind of space that stops conversation. Inside: Legrand Filles et Fils (one of the great wine shops of Paris), the ancient Librairie Jousseaume, and Bistrot Vivienne for coffee.</p>
+      <p class="place-tip">Enter via Rue des Petits-Champs — you arrive at the rotunda end and the whole gallery unfolds before you.</p>
+    </div>
+    <div class="place-card">
+      <div class="place-name">Passage Jouffroy &amp; Passage Verdeau</div>
+      <div class="place-name-fr">La suite · 1847</div>
+      <div class="place-address">10–12 Boulevard Montmartre</div>
+      <p class="place-desc">Cross Boulevard Montmartre from the Panoramas and continue your 19th-century walk. Jouffroy was the first passage built entirely of iron and glass — architecturally radical for its time. Verdeau beyond it is quieter still, a collector's world of old photographs, rare books and objects that exist nowhere else. All three chain together into one seamless walk without once returning to the street.</p>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- CHAPTER 4 — RUE MONTORGUEIL                            -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<section class="chapter fade-in" id="montorgueil">
+  <div class="chapter-header">
+    <span class="chapter-num">IV</span>
+    <h2 class="chapter-title">Rue Montorgueil &amp; the Market Quarter</h2>
+  </div>
+  <p class="chapter-subtitle">Le marché du quartier · Your morning ritual</p>
+
+  <p class="chapter-lead">
+    The last great market street in central Paris. Fish merchants, fromageries, boulangeries,
+    wine merchants and florists trading shoulder to shoulder since 1645. Go early on a
+    Sunday and you will understand exactly why we fell in love with this neighbourhood.
+  </p>
+
+  <div class="places-grid">
+    <div class="place-card">
+      <div class="place-name">Stohrer</div>
+      <div class="place-name-fr">La plus ancienne pâtisserie de Paris · Est. 1730</div>
+      <div class="place-address">51 Rue Montorgueil</div>
+      <p class="place-desc">Founded by Nicolas Stohrer, pastry chef to Louis XV, and operating from the same address for nearly three centuries. The rum baba was essentially invented here. The original painted ceiling and antique showcases are as intact as the recipes. Arrive before 9am.</p>
+      <p class="place-tip">Buy something to eat standing on the street. That is the right way to do it.</p>
+    </div>
+    <div class="place-card">
+      <div class="place-name">Frenchie</div>
+      <div class="place-address">5 Rue du Nil &nbsp;·&nbsp; Reservations essential</div>
+      <p class="place-desc">Chef Grégory Marchand's Michelin-starred restaurant, one street north of Montorgueil, that almost single-handedly transformed this neighbourhood into a serious dining destination. Market-driven and technically precise. The tasting menu is the move.</p>
+      <p class="place-tip">Frenchie Bar à Vins next door — no reservations, same kitchen philosophy, wine bar format. Arrive at 7pm or accept a wait.</p>
+    </div>
+    <div class="place-card">
+      <div class="place-name">L'Escargot Montorgueil</div>
+      <div class="place-address">38 Rue Montorgueil &nbsp;·&nbsp; Est. 1832</div>
+      <p class="place-desc">Nearly two centuries on the same street, the interior a listed monument, the dining room a Belle Époque stage set that has received Proust, Picasso and Dalí. The escargots six ways are as good as they ever were. Lunch is more affordable; the experience is identical.</p>
+    </div>
+    <div class="place-card">
+      <div class="place-name">Cul de Cochon</div>
+      <div class="place-address">98 Rue Montorgueil</div>
+      <p class="place-desc">The finest charcuterie on the street. Cured beef, pork, pâtés, rillettes. If you are cooking or assembling dinner in the apartment, this is your first stop.</p>
+    </div>
+    <div class="place-card">
+      <div class="place-name">Legrand Filles et Fils</div>
+      <div class="place-name-fr">Le caviste de référence</div>
+      <div class="place-address">1 Rue de la Banque &nbsp;·&nbsp; Inside Galerie Vivienne</div>
+      <p class="place-desc">Over 3,000 labels and staff who genuinely know what they are talking about. Tell them what you are eating, what mood you are in, what you want to spend. They will find something remarkable. The small wine bar inside lets you drink from the same cellar.</p>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- CHAPTER 5 — COFFEE                                     -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<section class="chapter fade-in" id="coffee">
+  <div class="chapter-header">
+    <span class="chapter-num">V</span>
+    <h2 class="chapter-title">Coffee &amp; Slow Mornings</h2>
+  </div>
+  <p class="chapter-subtitle">Le café · The sacred ritual</p>
+
+  <p class="chapter-lead">
+    One of our favourite things about this apartment: waking up, stepping out, getting a
+    fresh croissant or baguette, coming back and leisurely preparing for whatever the day
+    holds. No rush before 9am. 10am on a Sunday. Paris rewards the unhurried.
+  </p>
+
+  <div class="places-grid">
+    <div class="place-card">
+      <div class="place-name">A Priori Thé</div>
+      <div class="place-address">35–37 Galerie Vivienne</div>
+      <p class="place-desc">Tables inside Galerie Vivienne, spilling onto the mosaic floor of the passage. Coffee, eggs, pastry, 19th-century light filtered through glass. One of the great low-key breakfast experiences in the city.</p>
+      <p class="place-tip">Order the full breakfast and take your time. Nobody will rush you. That is not how Paris works.</p>
+    </div>
+    <div class="place-card">
+      <div class="place-name">Lockwood</div>
+      <div class="place-address">73 Rue d'Aboukir</div>
+      <p class="place-desc">Specialty coffee from Belleville Brûlerie, Paris's finest roastery. Relaxed, unhurried, genuinely excellent. Ten minutes' walk from the apartment.</p>
+    </div>
+    <div class="place-card">
+      <div class="place-name">Matamata Coffee Bar</div>
+      <div class="place-address">58 Rue d'Argout</div>
+      <p class="place-desc">Just off Rue Montmartre. Serious coffee, calm space, neighbourhood feel. Our go-to for a quiet start.</p>
+    </div>
+    <div class="place-card">
+      <div class="place-name">The Terraces of Rue Montorgueil</div>
+      <div class="place-address">Café du Centre · Le Compas · Café Montorgueil</div>
+      <p class="place-desc">Pick any terrace, sit down, order a café crème, and watch Paris begin its day. The food is secondary. The ritual is everything. This is what we mean when we say Paris has a way of living that changes you.</p>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- CHAPTER 6 — CULTURE                                    -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<section class="chapter fade-in" id="culture">
+  <div class="chapter-header">
+    <span class="chapter-num">VI</span>
+    <h2 class="chapter-title">Culture, Architecture &amp; Wandering</h2>
+  </div>
+  <p class="chapter-subtitle">La ville lumière · The city itself</p>
+
+  <p class="chapter-lead">
+    Everything feels like it is just 20 minutes away on foot — because it mostly is.
+    The Louvre, the Marais, Notre-Dame, the Palais Royal. Walk without a plan. The city
+    will take you somewhere worth being.
+  </p>
+
+  <div class="places-grid">
+    <div class="place-card">
+      <div class="place-name">Place des Victoires</div>
+      <div class="place-address">8 minutes on foot</div>
+      <p class="place-desc">A grand circular place centred on Louis XIV's equestrian statue, built in 1686. One of the finest proportioned urban spaces in Paris and almost entirely overlooked by visitors. The 17th-century buildings that ring it are extraordinarily preserved. Sit on the steps.</p>
+    </div>
+    <div class="place-card">
+      <div class="place-name">Palais Royal &amp; Gardens</div>
+      <div class="place-name-fr">Le jardin secret</div>
+      <div class="place-address">15 minutes on foot</div>
+      <p class="place-desc">The enclosed garden of the former royal palace — one of the most beautiful public spaces in Paris, almost entirely unknown to tourists. The arcaded walkways unchanged for 200 years. The Buren columns in the courtyard. The linden trees.</p>
+      <p class="place-tip">The finest picnic location in central Paris. Buy from Montorgueil, eat here.</p>
+    </div>
+    <div class="place-card">
+      <div class="place-name">Notre-Dame de Paris</div>
+      <div class="place-address">20 minutes on foot</div>
+      <p class="place-desc">Reopened December 2024 after the 2019 fire. The restoration is extraordinary — the interior more luminous now than it has been in living memory. Go in the morning. Book timed entry online in advance (free, but queues without a reservation are long).</p>
+    </div>
+    <div class="place-card">
+      <div class="place-name">Le Marais</div>
+      <div class="place-address">10–15 minutes on foot heading east</div>
+      <p class="place-desc">Paris's historic Jewish quarter, the Place des Vosges (1612), the Musée Picasso, the Musée Carnavalet. And the best falafel in Europe on Rue des Rosiers.</p>
+      <p class="place-tip">Avoid Saturdays. Sunday morning is the Marais at its most alive — uniquely open when the rest of Paris is still sleeping.</p>
+    </div>
+    <div class="place-card">
+      <div class="place-name">The Louvre</div>
+      <div class="place-address">20 minutes on foot</div>
+      <p class="place-desc">Do not try to see it. Pick two or three rooms and give them the time they deserve. The Egyptian Antiquities rooms are extraordinary and rarely crowded. The Jardin des Tuileries beside it is one of the great formal gardens in France — free, 20 minutes, worth more than most paid attractions.</p>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- CHAPTER 7 — EVENINGS                                   -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<section class="chapter fade-in" id="evenings">
+  <div class="chapter-header">
+    <span class="chapter-num">VII</span>
+    <h2 class="chapter-title">Evenings</h2>
+  </div>
+  <p class="chapter-subtitle">La vie nocturne · The art of the long evening</p>
+
+  <p class="chapter-lead">
+    Paris evenings are long, unhurried, and structured around pleasure. The aperitif before
+    dinner. The dinner itself. The walk home past midnight. And if you need a crêpe at
+    12:30am — and you will — the crêperie is just a few steps from the door.
+  </p>
+
+  <div class="places-grid">
+    <div class="place-card">
+      <div class="place-name">Frenchie Bar à Vins</div>
+      <div class="place-address">6 Rue du Nil &nbsp;·&nbsp; No reservations</div>
+      <p class="place-desc">Outstanding wine list. Small plates from the same kitchen as the Michelin-starred restaurant next door. No reservations — arrive early or accept a wait at the bar, which is not a hardship.</p>
+      <p class="place-tip">7pm when it opens. It fills in 30 minutes.</p>
+    </div>
+    <div class="place-card">
+      <div class="place-name">Legrand Filles et Fils</div>
+      <div class="place-name-fr">Wine bar inside Galerie Vivienne</div>
+      <div class="place-address">1 Rue de la Banque</div>
+      <p class="place-desc">Drinking by the glass from one of the great cellars in Paris, inside a 19th-century passage as the evening empties it of visitors. There is genuinely no equivalent of this experience anywhere else.</p>
+    </div>
+    <div class="place-card">
+      <div class="place-name">Au Rocher de Cancale</div>
+      <div class="place-address">78 Rue Montorgueil</div>
+      <p class="place-desc">Oysters, white wine, a Belle Époque interior, late into the evening. Originating as an oyster merchant's on what was once Paris's fish market street. The atmosphere alone is worth it.</p>
+    </div>
+    <div class="place-card">
+      <div class="place-name">The Midnight Crêperie</div>
+      <div class="place-address">Just steps from the apartment</div>
+      <p class="place-desc">After a long evening of walking, drinking, eating — the city still alive around you — there is something specifically perfect about a late-night crêpe just a few steps from home. This is one of our favourite things about the apartment's location. You never have to choose between staying out and getting back.</p>
+    </div>
+    <div class="place-card">
+      <div class="place-name">Canal Saint-Martin &amp; Oberkampf</div>
+      <div class="place-name-fr">Pour une soirée plus animée</div>
+      <div class="place-address">20 minutes on foot or 10 by Vélib'</div>
+      <p class="place-desc">When you want a livelier evening: Canal Saint-Martin (10th) for canal-side bars in warm weather, Oberkampf and Bastille (11th) for the best bar concentration in Paris. Neither is tourist territory — this is where young Parisians actually spend their evenings.</p>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- CHAPTER 8 — OUR FAVOURITE RESTAURANTS                  -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<section class="chapter fade-in" id="restaurants">
+  <div class="chapter-header">
+    <span class="chapter-num">VIII</span>
+    <h2 class="chapter-title">Our Favourite Restaurants</h2>
+  </div>
+  <p class="chapter-subtitle">Irene &amp; Danny's personal list · Updated regularly</p>
+
+  <p class="body-text">
+    These are places we actually go back to. Not a list compiled from someone else's guide — our own. Paris restaurants change quickly, so we keep this updated. If you need a last-minute reservation or a recommendation for a specific evening, just ask us — that is exactly what we are here for.
+  </p>
+
+  <div id="restaurants-list">
+    <!-- Rendered by JavaScript below — edit the RESTAURANTS array to update -->
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- CHAPTER 9 — CONCIERGE                                  -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<section class="chapter fade-in" id="concierge">
+  <div class="chapter-header">
+    <span class="chapter-num">IX</span>
+    <h2 class="chapter-title">A Few Connections</h2>
+  </div>
+  <p class="chapter-subtitle">Things we can arrange for you</p>
+
+  <p class="body-text">
+    Over the years in Paris we have built a small network of people who make certain
+    experiences possible that are otherwise very difficult to arrange. If any of the
+    following interests you, just ask.
+  </p>
+
+  <div class="concierge-grid">
+    <div class="concierge-card">
+      <div class="concierge-icon">✦</div>
+      <div class="concierge-title">A Star Chef at Home</div>
+      <p class="concierge-desc">A Michelin-level chef, your apartment, your evening. A private dinner that no restaurant can replicate.</p>
+    </div>
+    <div class="concierge-card">
+      <div class="concierge-icon">✦</div>
+      <div class="concierge-title">Cartier</div>
+      <p class="concierge-desc">We know someone at Cartier. If you are planning something significant, we can make the experience properly special.</p>
+    </div>
+    <div class="concierge-card">
+      <div class="concierge-icon">✦</div>
+      <div class="concierge-title">Prada</div>
+      <p class="concierge-desc">We know someone at Prada. Private access, real attention, no queuing with tourists.</p>
+    </div>
+  </div>
+
+  <div class="callout" style="margin-top: 32px;">
+    <div class="callout-label">Last-minute reservations</div>
+    <p class="callout-text">If you want a table somewhere specific and can't get in through normal channels, ask us. We often can. This is part of what we offer and we enjoy doing it.</p>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- CHAPTER 10 — PRACTICAL                                 -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<section class="chapter fade-in" id="practical">
+  <div class="chapter-header">
+    <span class="chapter-num">X</span>
+    <h2 class="chapter-title">Practical Notes</h2>
+  </div>
+  <p class="chapter-subtitle">Quelques conseils · A few things worth knowing</p>
+
+  <div class="practical-grid">
+    <div class="practical-item">
+      <h4>Getting around</h4>
+      <p>Paris is intentionally becoming a walking city — fewer cars, more pedestrian space, more terraces, more green. You will walk. A lot. Plan for it, enjoy it, and get good shoes. Vélib' (bike-share) is excellent for medium distances. Download the app. Nearest métro: Sentier (Line 3), Bourse (Line 3), Grands Boulevards (Lines 8 &amp; 9).</p>
+    </div>
+    <div class="practical-item">
+      <h4>Money &amp; tipping</h4>
+      <p>Service is included by law in all restaurant bills (<em>service compris</em>). Leaving a few euros after a good dinner is appreciated but entirely optional. At cafés, rounding up is sufficient. Nobody expects American-style tipping.</p>
+    </div>
+    <div class="practical-item">
+      <h4>Restaurants &amp; reservations</h4>
+      <p>Dinner service starts at 7:30pm, rooms fill between 8 and 9pm. Book ahead for anything serious — a week for good bistros, three to four weeks for destination restaurants. Lunch is almost always more available and frequently better value, often the same kitchen at two-thirds the price.</p>
+    </div>
+    <div class="practical-item">
+      <h4>Language</h4>
+      <p>Four words open all doors: <em>Bonjour</em> (hello), <em>s'il vous plaît</em> (please), <em>merci</em> (thank you), <em>excusez-moi</em> (excuse me). Always begin every interaction with <em>Bonjour</em>. It is not optional — it is the social contract. Parisians who seem reserved will almost always warm up immediately when greeted properly.</p>
+    </div>
+    <div class="practical-item">
+      <h4>Sundays</h4>
+      <p>Many shops close. Montorgueil is at its most magnificent. The Marais is uniquely alive — its Jewish heritage means it operates when the rest of Paris doesn't. Treat Sunday as the city's best slow day and plan accordingly.</p>
+    </div>
+    <div class="practical-item">
+      <h4>August</h4>
+      <p>Paris goes on holiday. Some restaurants close for the month. The city is quieter, warmer, and in some ways more purely itself — tourists and locals coexisting on the terraces, the passages uncrowded, the pace slower even than usual. Embrace it.</p>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- ABOUT US                                               -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<section class="chapter fade-in" id="about">
+  <div class="chapter-header">
+    <span class="chapter-num">✦</span>
+    <h2 class="chapter-title">A Note from Irene &amp; Danny</h2>
+  </div>
+
+  <div class="about-us">
+    <p>
+      We fell in love with Paris and the people of Paris — with the live-first, work-second
+      way of being in the world. The easy conversation with strangers on terraces, the
+      delicious food around every corner, the friendships made in a city far from home.
+      Coming back exhausted after 25,000 steps, sleeping deeply, waking up slowly.
+    </p>
+    <p style="margin-top: 20px;">
+      We loved waking up to a city that doesn't begin before 9am — 10am on a Sunday —
+      walking out for a fresh croissant and a baguette and coming back to prepare for the
+      day in our own time. We loved having space. Hotels in Paris can be tiny and expensive
+      and full of small disappointments. Good Airbnbs are hit and miss. We wanted something
+      that was the quality of a proper hotel with all the real conveniences of a home —
+      a large fridge, a working shower, a kitchen at midnight, space to work when you need to.
+      That is what we built here.
+    </p>
+    <p style="margin-top: 20px;">
+      We are frequent visitors ourselves and love staying in our own place when we're in the
+      city. So please — treat it like your friend's house. Because that is exactly what it is.
+    </p>
+    <div class="sign">Irene &amp; Danny</div>
+  </div>
+</section>
+
+
+<!-- Closing -->
+<section id="closing" class="fade-in">
+  <span class="cover-ornament">✦</span>
+  <p class="closing-text">
+    When you are exhausted by the beauty of it all —<br>
+    and Paris will eventually exhaust you, in the best way —<br>
+    come home to the courtyard. Notice how quiet it is.<br>
+    The city is still out there, just steps away.<br>
+    There is nowhere better to be.
+  </p>
+  <p class="closing-sign">Bonne séjour.</p>
+  <div class="cover-rule" style="margin-top: 32px;"></div>
+</section>
+
+<footer>
+  159 Rue Montmartre &nbsp;·&nbsp; Paris 2ème &nbsp;·&nbsp; Irene &amp; Danny
+</footer>
+
+
+<script>
+// ═══════════════════════════════════════════════════════════════
+// RESTAURANTS — EDIT THIS LIST TO UPDATE THE GUIDE
+// Each entry: { name, neighbourhood, type, desc, tip (optional) }
+// ═══════════════════════════════════════════════════════════════
+const RESTAURANTS = [
+  {
+    name: "Frenchie",
+    neighbourhood: "2ème · Rue du Nil",
+    type: "Contemporary French · Michelin starred",
+    desc: "Chef Grégory Marchand's flagship — the restaurant that made this neighbourhood a serious dining destination. Market-driven, technically precise, genuinely special. Book the tasting menu.",
+    tip: "Book 3–4 weeks ahead minimum. Lunch is slightly easier to get."
+  },
+  {
+    name: "Le Grand Colbert",
+    neighbourhood: "2ème · Galerie Colbert",
+    type: "Classic brasserie",
+    desc: "One of the most beautiful dining rooms in Paris — Art Nouveau, mosaic floors, brass and mirrors. Oysters, sole meunière, steak tartare. The architecture alone justifies the reservation.",
+    tip: "Sunday lunch here is one of the great Paris rituals."
+  },
+  {
+    name: "L'Escargot Montorgueil",
+    neighbourhood: "2ème · Rue Montorgueil",
+    type: "Classic French · Est. 1832",
+    desc: "A Paris institution for nearly two centuries, the interior a listed monument. The escargots six ways are as good as they have always been. Proust, Picasso and Dalí all sat here.",
+    tip: "Lunch is more affordable; the experience is identical."
+  },
+  {
+    name: "Au Rocher de Cancale",
+    neighbourhood: "2ème · Rue Montorgueil",
+    type: "Brasserie · Late night",
+    desc: "Oysters, white Burgundy, Belle Époque atmosphere, late into the evening on what was once Paris's fish market street. A perfect ending to a long day.",
+    tip: null
+  },
+  {
+    name: "Frenchie Bar à Vins",
+    neighbourhood: "2ème · Rue du Nil",
+    type: "Wine bar · No reservations",
+    desc: "Same kitchen as the starred Frenchie, wine bar format, no bookings. Outstanding list. The small plates are serious. Arrive when it opens at 7pm.",
+    tip: null
+  },
+];
+
+// Render restaurants
+const list = document.getElementById('restaurants-list');
+RESTAURANTS.forEach(r => {
+  const card = document.createElement('div');
+  card.className = 'restaurant-card';
+  card.innerHTML = `
+    <div class="restaurant-name">${r.name}</div>
+    <div class="restaurant-meta">${r.neighbourhood} &nbsp;·&nbsp; ${r.type}</div>
+    <p class="restaurant-desc">${r.desc}</p>
+    ${r.tip ? `<p class="place-tip" style="margin-top:10px;">${r.tip}</p>` : ''}
+  `;
+  list.appendChild(card);
+});
+
+// Scroll fade-ins
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.07 });
+document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+// Active TOC
+const sections = document.querySelectorAll('section[id]');
+const tocLinks  = document.querySelectorAll('#toc-links a');
+const tocObs = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      tocLinks.forEach(l => l.classList.remove('active'));
+      const l = document.querySelector(`#toc-links a[href="#${e.target.id}"]`);
+      if (l) l.classList.add('active');
+    }
+  });
+}, { rootMargin: '-40% 0px -55% 0px' });
+sections.forEach(s => tocObs.observe(s));
+</script>
+
+</body>
+</html>
